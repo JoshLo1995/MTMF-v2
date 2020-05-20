@@ -1,0 +1,12 @@
+#contentBox {
+    margin-top: 50%;
+    /* height: 100vh; */
+    display: flex;
+    font-family: helvetica;
+    justify-content: center;
+    /* align-items: center; */
+}
+
+html {
+    background-image: url('../../../Content/images/rbLeavingPits.jpg');
+}

@@ -1,0 +1,12 @@
+#submitButton {
+    background-color: #223971;
+    border: 2px solid #223971;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#submitColumn {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
