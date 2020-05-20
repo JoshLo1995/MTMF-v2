@@ -1,27 +1,20 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { logoutUser } from '../../../actions/authActions';
 import Canvas from '../../Canvas/Canvas';
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { red } from '@material-ui/core/colors';
-
-// import {api} from '../utils/Api';
-
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 
-export default class MembersPage extends React.Component { 
+
+
+class MembersPage extends React.Component { 
     constructor(props) {
         super(props);
 
@@ -31,6 +24,11 @@ export default class MembersPage extends React.Component {
             active_type: null
         }
     }
+
+    onLogoutClick = e => {
+        e.preventDefault();
+        this.props.logoutUser();
+      };
 
     updateImageObject(e) {
         const file  = e.target.files[0];
@@ -76,6 +74,20 @@ export default class MembersPage extends React.Component {
                     </Grid>
                     <Grid item xs={3}>
                         <Grid container justify="center" spacing={3}>
+                            <Grid item>
+                                <button
+                                    style={{
+                                        width: "150px",
+                                        borderRadius: "3px",
+                                        letterSpacing: "1.5px",
+                                        marginTop: "1rem"
+                                    }}
+                                    onClick={this.onLogoutClick}
+                                    className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+                                    >
+                                    Logout
+                                </button>
+                            </Grid>
                             <Grid item >
                                 {this.state.image_object && <Button onClick={() => this.processImageObject("imagenet")}variant="contained" color="primary">
                                     Get objects with ImageNet
@@ -93,4 +105,16 @@ export default class MembersPage extends React.Component {
         )
     }
 }
+
+MembersPage.propTypes = {
+    logoutUser: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired
+  };
+  const mapStateToProps = state => ({
+    auth: state.auth
+  });
+  export default connect(
+    mapStateToProps,
+    { logoutUser }
+  )(MembersPage);
 

@@ -1,23 +1,25 @@
-import React from 'react';
-import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
-import "../Content/css/TopBar.css";
-import "./SubmitButton/SubmitButton.css";
-import "./views/SignupPage/signUpPage.css";
-import SignupPage from './views/SignupPage/signUpPage.jsx';
-import MembersPage from './views/MembersPage/MembersPage.jsx';
-import LandingPage from './views/LandingPage/LandingPage.jsx';
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
-import Button from 'react-bootstrap/Button';
-import Navbar from 'react-bootstrap/Navbar';
-
-import Container from '@material-ui/core/Container';
-
-export default function TopBar() {
-      return(
-        <Container>
-          <Navbar expand="lg" variant="dark" bg="dark" fixed = "top">
-            <Navbar.Brand href="/members">MTMF</Navbar.Brand>
-          </Navbar>
-        </Container>
-      )
-    }
+export default class TopBar extends Component {
+  render() {
+    return (
+      <div className="navbar-fixed">
+        <nav className="z-depth-0">
+          <div className="nav-wrapper white">
+            <Link
+              to="/"
+              style={{
+                fontFamily: "monospace"
+              }}
+              className="col s5 brand-logo center black-text"
+            >
+              {/* <i className="material-icons">code</i> */}
+              MTMF
+            </Link>
+          </div>
+        </nav>
+      </div>
+    );
+  }
+}
