@@ -1,26 +1,26 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+
 // Create Schema
-const UserSchema = new Schema({
+const TrackSchema = new Schema({
   name: {
     type: String,
-    required: true
+    required: false
   },
-  email: {
+  imageData: {
     type: String,
-    required: true
-  },
-  password: {
-    type: String,
-    required: true
+    required: true,
+    default: null
   },
   date: {
     type: Date,
     default: Date.now
   },
-  tracks: {
+  generatedLine: {
     type: Array,
     default: null,
+    required: false
   }
 });
-module.exports = User = mongoose.model("users", UserSchema);
+
+module.exports = Track = mongoose.model("tracks", TrackSchema);

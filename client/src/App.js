@@ -50,10 +50,8 @@ function App() {
             <PrivateRoute exact path = "/members">
               <MembersPage/>
             </PrivateRoute>
-            <Route>
-              <Route exact path = "/login">
-                <LoginPage/>
-              </Route>
+            <Route exact path = "/login">
+              <LoginPage/>
             </Route>
           </Switch>
         </div>

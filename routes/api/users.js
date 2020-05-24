@@ -26,7 +26,8 @@ router.post("/register", (req, res) => {
         const newUser = new User({
           name: req.body.name,
           email: req.body.email,
-          password: req.body.password
+          password: req.body.password, 
+          imageData: null
         });
   // Hash password before saving in database
         bcrypt.genSalt(10, (err, salt) => {
@@ -53,7 +54,7 @@ router.post("/login", (req, res) => {
     if (!isValid) {
       return res.status(400).json(errors);
     }
-  const email = req.body.email;
+    const email = req.body.email;
     const password = req.body.password;
   // Find user by email
     User.findOne({ email }).then(user => {
@@ -68,7 +69,8 @@ router.post("/login", (req, res) => {
           // Create JWT Payload
           const payload = {
             id: user.id,
-            name: user.name
+            name: user.name,
+            email: email,
           };
   // Sign token
           jwt.sign(
