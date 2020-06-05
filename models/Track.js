@@ -8,7 +8,7 @@ const TrackSchema = new Schema({
     required: false
   },
   imageData: {
-    type: String,
+    type: Object,
     required: true,
     default: null
   },

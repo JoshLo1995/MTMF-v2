@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { logoutUser, getCurrentUser } from '../../../actions/authActions';
-import { uploadTrack, getUserTracks } from '../../../actions/trackActions';
+import { uploadTrack, getUserTracks, removeGarbage } from '../../../actions/trackActions';
+
 import Canvas from '../../Canvas/Canvas';
 
 import Container from '@material-ui/core/Container';
@@ -24,7 +25,7 @@ class MembersPage extends React.Component {
     }
 
     // onSubmit, post process the track (track actions) and then save to a new track object to be saved in the db
-    processAndSave = async () => {
+    processAndSave = async (imgWidth, imgHeight) => {
         console.log("this is onSubmit");
 
         // GET
@@ -34,18 +35,21 @@ class MembersPage extends React.Component {
         let tracks = await this.props.getUserTracks(currentUser); // When printed now returns [] as expected
             // Upload track image to server that will be deleted after post processing
                 // POST to server the image that is uploaded by the user
-        // this.state.image_object has 100% been defined by this point, stored as a base64, way too large to pass in as a request header so we need to pass it in as a JSON
-        // console.log("type of image_object", typeof(this.state.image_object));
+
+        const imageData = btoa(this.state.image_object);
+        // console.log(imageData);
         let newJson = {
-            "imageData": this.state.image_object // json object
+            "imageData": imageData, // Stored as a LARGE base64 string
+            "imageWidth": imgWidth,
+            "imageHeight": imgHeight, 
         }
-        this.props.uploadTrack(newJson); // stored as a base64
-            
-        
+  
+        this.props.uploadTrack(newJson); // image stored as a base64 on mongo server
 
         // TODO
         // MODIFY uploaded track image
-        let imageData = this.state.image_object; // base64
+        this.props.removeGarbage(newJson); 
+        // let imageData = this.state.image_object; // base64
 
         // Process the track image (this.state.image_object) (color mask out the non-track entities)
             // Remove corner numbers, names, pit buildings, pit road, etc (use google vision API to first remove unnecessary pixels)
@@ -76,17 +80,42 @@ class MembersPage extends React.Component {
     onLogoutClick = e => {
         e.preventDefault();
         this.props.logoutUser();
-      };
+    };
 
     updateImageObject(e) {
-        const file  = e.target.files[0];
+        const file  = e.target.files[0]; 
         const reader = new FileReader();
-
         
         reader.readAsDataURL(file);
         reader.onload = () => {
             this.setState({image_object: reader.result}, () => {
-                this.processAndSave();
+                // Retrieving image dimensions
+                let img = new Image();
+                img.onload = (img) => {
+                    const image = img.path[0].src; //Stored as base64
+                    const width = img.path[0].width;
+                    const height = img.path[0].height;
+
+                    // Sending pixel data to server
+                    // // Create canvas, get context, 
+                    // Convert base64 to Uint8ClampedARray
+                    // Convert Uint8 to ImageData
+                    // Draw Image Data to canvas
+                    // const canvas = document.createElement('canvas');
+                    // const context = canvas.getContext('2d');
+
+                    // canvas.width = width; canvas.height = height;
+                    // context.drawImage(img, canvas.width, canvas.height); // PROBLEM IS HERE
+                    // // // We're gettin da imageData
+                    // const data = context.getImageData(0, 0, canvas.width, canvas.height);
+
+                    // console.log(data);
+
+                    this.processAndSave(width, height);
+        
+                }
+                img.src = this.state.image_object; // Needs to be of HTMLImageElement, SVGImageElement, HTMLCanvasElement, or ImageBitmap
+                
             });
         };
     }
@@ -168,6 +197,7 @@ MembersPage.propTypes = {
     uploadTrack: PropTypes.func.isRequired,
     getCurrentUser: PropTypes.func.isRequired,
     getUserTracks: PropTypes.func.isRequired,
+    removeGarbage: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired
 };
 
@@ -177,6 +207,6 @@ MembersPage.propTypes = {
 
   export default connect(
     mapStateToProps,
-    { logoutUser, getCurrentUser, uploadTrack, getUserTracks }
+    { logoutUser, getCurrentUser, uploadTrack, getUserTracks, removeGarbage }
   )(MembersPage);
 
